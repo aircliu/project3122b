@@ -12,7 +12,22 @@ function handlePostResult(resultData) {
 
 jQuery("#login-form").submit(function (event) {
     event.preventDefault();
+    
+    // Check if reCAPTCHA is completed
+    const recaptchaResponse = grecaptcha.getResponse();
+    if (!recaptchaResponse) {
+        // Show error if reCAPTCHA not completed
+        jQuery("#recaptcha-error").show();
+        return;
+    }
+    
+    // Hide error message if reCAPTCHA completed
+    jQuery("#recaptcha-error").hide();
+    
+    // Get form data and add reCAPTCHA response
     let formData = $(this).serialize();
+    formData += "&g-recaptcha-response=" + recaptchaResponse;
+    
     jQuery.ajax({
         dataType: "json",
         data: formData,
